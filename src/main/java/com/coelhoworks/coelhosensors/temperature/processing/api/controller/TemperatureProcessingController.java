@@ -48,17 +48,14 @@ public class TemperatureProcessingController {
 
     log.info(logOutput.toString());
 
-    String exchange = FANOUT_EXCHANGE;
     String routingKey = "";
-
-    String payload = logOutput.toString();
 
     MessagePostProcessor messagePostProcessor = message -> {
       message.getMessageProperties().setHeader("sensorId", logOutput.getSensorId().toString());
       return message;
     };
 
-    rabbitTemplate.convertAndSend(exchange, routingKey, payload, messagePostProcessor);
+    rabbitTemplate.convertAndSend(FANOUT_EXCHANGE, routingKey, logOutput, messagePostProcessor);
 
   }
 }
